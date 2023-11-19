@@ -4,8 +4,13 @@ use std::{
     net::{TcpListener, TcpStream},
 };
 
+static IP: &'static str = "0.0.0.0";
+static PORT: &'static str = "1024";
+
+
 fn main() {
-    let listener = TcpListener::bind("0.0.0.0:1024").unwrap();
+    let addr: String = format!("{}:{}", IP, PORT);
+    let listener = TcpListener::bind(addr).unwrap();
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();
