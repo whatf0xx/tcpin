@@ -1,7 +1,8 @@
 use std::{
     fmt,
-    io::{prelude::*, BufReader},
+    io::{BufRead, BufReader},
     net::{TcpListener, TcpStream},
+    process::Command
 };
 
 static IP: &'static str = "0.0.0.0";
@@ -11,10 +12,10 @@ static PORT: &'static str = "1024";
 fn main() {
     let addr: String = format!("{}:{}", IP, PORT);
     let listener = TcpListener::bind(addr).unwrap();
-
+    
     for stream in listener.incoming() {
         let stream = stream.unwrap();
-
+        
         if let Err(handling_error) = handle_connection(stream) {
             println!("Ran into an unexpected error, {}.", handling_error);
         }
@@ -27,7 +28,10 @@ fn handle_connection(stream: TcpStream) -> Result<(), HandlingError> {
     let mut counter: i32 = 0;
     buf_reader.lines().for_each(
         |line| match line {
-            Ok(txt) => {println!("{}: {}", counter, txt);
+            Ok(txt) => {Command::new("echo")
+                            .arg(txt)
+                            .spawn()
+                            .expect("Failed to execute command");
                         counter += 1},
             Err(err) => {println!("Ran into a problem, looks like {:?}", err);
                          found_errors = true},
