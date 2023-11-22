@@ -1,15 +1,28 @@
 use std::{
     fmt,
+    env::{args, current_exe},
     io::{BufRead, BufReader},
     net::{TcpListener, TcpStream},
     process::Command
 };
+use regex::Regex;
 
 static IP: &'static str = "0.0.0.0";
 static PORT: &'static str = "1024";
 
 
 fn main() {
+    let args: Vec<String> = args().collect();
+    println!("{:?}", args);
+    println!("{:?}", current_exe());
+    let fpath: &str = &args.get(0).unwrap();
+    let path_pattern = Regex::new(&format!(r"{}$", fpath)).unwrap();
+    if path_pattern.is_match(&current_exe().unwrap().to_str().unwrap()) {
+        println!("Matched the first arg ok");
+    } else{
+        panic!("First arg failed to match the current exe path!");
+    }
+
     let addr: String = format!("{}:{}", IP, PORT);
     let listener = TcpListener::bind(addr).unwrap();
     
