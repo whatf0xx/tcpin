@@ -1,2 +1,5 @@
 .vscode
 /target
+client.py
+ynetd
+hello_world
